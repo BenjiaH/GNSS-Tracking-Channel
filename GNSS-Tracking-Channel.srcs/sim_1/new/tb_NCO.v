@@ -23,9 +23,9 @@
 
 module tb_NCO();
 
-parameter C_CARR_OUTPUT_WIDTH = `C_NCO_PHASE_WIDTH;
-parameter C_CODE_OUTPUT_WIDTH = `C_S_CARR_OUTPUT_WIDTH;
-parameter C_CODE_PHASE_OUTPUT_WIDTH = `C_NCO_PHASE_WIDTH;
+parameter integer C_CARR_OUTPUT_WIDTH = `C_NCO_PHASE_WIDTH;
+parameter integer C_CODE_OUTPUT_WIDTH = `C_S_CARR_OUTPUT_WIDTH;
+parameter integer C_CODE_PHASE_OUTPUT_WIDTH = `C_NCO_PHASE_WIDTH;
 
 // Input/Output
 reg                                         tb_I_sysClk;

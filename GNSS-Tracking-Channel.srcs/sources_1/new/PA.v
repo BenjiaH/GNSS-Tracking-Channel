@@ -22,9 +22,6 @@
 `include "../../include/configurationPackage.v"
 
 module PA
-// #(
-//     parameter C_PA_OUTPUT_WIDTH = 2
-// )
 (
     input   wire                                    I_sysClk,
     input   wire                                    I_sysRst_n,

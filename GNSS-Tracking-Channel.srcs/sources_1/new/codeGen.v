@@ -29,17 +29,17 @@ module codeGen
     input   wire                                            I_sysClk,
     input   wire                                            I_sysRst_n,
     input   wire    [`C_NCO_PHASE_WIDTH - 1 : 0]            I_FSW,
-
+    output  reg                                             O_codeReplicaClk_d,
     output  wire                                            O_codeFinish,
     output  reg     [`C_CODE_WORD_SIZE - 1 : 0]             O_codeWord,
     output  reg     [0 : 0]                                 O_codeReplica
 );
 
-// Parameters and integer
-parameter   C_CODE_REPLICA_COUNTER_WIDTH    = (`C_CODE_WORD_SIZE == 1) ? 1 : $clog2(`C_CODE_WORD_SIZE); // 5
-parameter   C_CODE_REPLICA_COUNTER_MAX      = `C_CODE_WORD_SIZE - 1;                                    // 31
-parameter   C_CODE_WORD_COUNTER_WIDTH       = (`C_CODE_ROM_DEPTH == 1) ? 1 : $clog2(`C_CODE_ROM_DEPTH); // 5
-parameter   C_CODE_WORD_COUNTER_MAX         = `C_CODE_ROM_DEPTH - 1;                                     // 31
+// Parameters
+parameter integer C_CODE_REPLICA_COUNTER_WIDTH    = $ceil((`C_CODE_WORD_SIZE == 1) ? 1 : $clog2(`C_CODE_WORD_SIZE)); // 5
+parameter integer C_CODE_REPLICA_COUNTER_MAX      = `C_CODE_WORD_SIZE - 1;                                    // 31
+parameter integer C_CODE_WORD_COUNTER_WIDTH       = $ceil((`C_CODE_ROM_DEPTH == 1) ? 1 : $clog2(`C_CODE_ROM_DEPTH)); // 5
+parameter integer C_CODE_WORD_COUNTER_MAX         = `C_CODE_ROM_DEPTH - 1;                                     // 31
 
 // Internal signals
 wire    [`C_NCO_PHASE_WIDTH - 1 : 0]            S_codeGen;
@@ -47,12 +47,13 @@ wire    [`C_S_CARR_OUTPUT_WIDTH - 1 : 0]        S_codeGenSin;   // Not used
 wire    [`C_S_CARR_OUTPUT_WIDTH - 1 : 0]        S_codeGenCos;   // Not used
 reg                                             S_codeReplicaClk;
 reg     [C_CODE_REPLICA_COUNTER_WIDTH - 1 : 0]  S_codeReplicaCounter;
+reg     [C_CODE_REPLICA_COUNTER_WIDTH - 1 : 0]  S_codeReplicaCounter_d;
 reg                                             S_codeWordClk;
 reg     [C_CODE_WORD_COUNTER_WIDTH - 1 : 0]     S_codeWordCounter;
 reg                                             S_codeWordCounterMaxFlag;
 reg                                             S_codeWordCounterMaxFlag_d1;
-wire    [`C_CODE_WORD_SIZE - 1 : 0]             S_codeWord;
-wire    [0 : 0]                                 S_codeReplica;
+// wire    [`C_CODE_WORD_SIZE - 1 : 0]             S_codeWord;
+// wire    [0 : 0]                                 S_codeReplica;
 reg     [`C_CODE_ROM_WIDTH - 1 : 0]             S_CAcode  [`C_CODE_ROM_DEPTH - 1 : 0];
 
 initial begin 
@@ -77,11 +78,16 @@ U_CODE_GEN_0
 always @(posedge I_sysClk or negedge I_sysRst_n)
     if(!I_sysRst_n)
         S_codeReplicaClk <= 1'b0;
-    // else if(S_codeGen < S_codeGen_d1)
     else if(S_codeGen > (`C_CODE_REG_MAX - I_FSW))
         S_codeReplicaClk <= 1'b1;
     else
         S_codeReplicaClk <= 1'b0;
+
+always @(posedge I_sysClk or negedge I_sysRst_n)
+    if(!I_sysRst_n)
+        O_codeReplicaClk_d <= 0;
+    else
+        O_codeReplicaClk_d <= S_codeReplicaClk;
 
 // Generate code replica counter
 always @(posedge S_codeReplicaClk or negedge I_sysRst_n)
@@ -95,8 +101,14 @@ always @(posedge S_codeReplicaClk or negedge I_sysRst_n)
 // Generate code word clock
 always @(posedge I_sysClk or negedge I_sysRst_n)
     if(!I_sysRst_n)
+        S_codeReplicaCounter_d <= 0;
+    else
+        S_codeReplicaCounter_d <= S_codeReplicaCounter;
+
+always @(posedge I_sysClk or negedge I_sysRst_n)
+    if(!I_sysRst_n)
         S_codeWordClk <= 1'b0;
-    else if(S_codeReplicaCounter == C_CODE_REPLICA_COUNTER_MAX)
+    else if(S_codeReplicaCounter == 0 && S_codeReplicaCounter_d == C_CODE_REPLICA_COUNTER_MAX)
         S_codeWordClk <= 1'b1;
     else
         S_codeWordClk <= 1'b0;
@@ -129,21 +141,17 @@ assign O_codeFinish = (S_codeWordCounterMaxFlag_d1 & ~S_codeWordCounterMaxFlag) 
 // assign O_PPS1ms = O_codeFinish;
 
 // Generate code word
-assign  S_codeWord = S_CAcode[S_codeWordCounter];
-
 always @(posedge I_sysClk or negedge I_sysRst_n)
     if(!I_sysRst_n)
         O_codeWord <= 0;
     else
-        O_codeWord <= S_codeWord;
+        O_codeWord <= S_CAcode[S_codeWordCounter];
 
 // Generate code replica
-assign  S_codeReplica = S_codeWord[S_codeReplicaCounter];
-
 always @(posedge I_sysClk or negedge I_sysRst_n)
     if(!I_sysRst_n)
         O_codeReplica <= 0;
     else
-        O_codeReplica <= S_codeReplica;
+        O_codeReplica <= S_CAcode[S_codeWordCounter][S_codeReplicaCounter_d];
 
 endmodule

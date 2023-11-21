@@ -29,22 +29,22 @@ module carrierMixing
     input   wire                                                                I_FEInputDataValid,
     input   wire signed [`C_S_CARR_OUTPUT_WIDTH - 1 : 0]                        I_S_carrSinReplica,
     input   wire signed [`C_S_CARR_OUTPUT_WIDTH - 1 : 0]                        I_S_carrCosReplica,
-    output  reg signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   O_S_carrIData,
-    output  reg signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   O_S_carrQData
+    output  reg signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   O_S_carrMix_I,
+    output  reg signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   O_S_carrMix_Q
 );
 
 always @(posedge I_sysClk or negedge I_sysRst_n)
     if(!I_sysRst_n) begin
-        O_S_carrIData <= 0;
-        O_S_carrQData <= 0;
+        O_S_carrMix_I <= 0;
+        O_S_carrMix_Q <= 0;
     end
     else if(!I_FEInputDataValid) begin
-        O_S_carrIData <= O_S_carrIData;
-        O_S_carrQData <= O_S_carrQData;
+        O_S_carrMix_I <= O_S_carrMix_I;
+        O_S_carrMix_Q <= O_S_carrMix_Q;
     end
     else begin
-        O_S_carrIData <= I_S_FEInputData * I_S_carrCosReplica;
-        O_S_carrQData <= I_S_FEInputData * I_S_carrSinReplica;
+        O_S_carrMix_I <= I_S_FEInputData * I_S_carrCosReplica;
+        O_S_carrMix_Q <= I_S_FEInputData * I_S_carrSinReplica;
     end
 
 endmodule

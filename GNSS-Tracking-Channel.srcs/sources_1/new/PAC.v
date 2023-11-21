@@ -37,10 +37,8 @@ wire        [`C_PHASE_HEADER_LENGTH - 1 : 0]    S_phaseCut                      
 reg signed  [`C_SIN_COS_LUT_WIDTH - 1 : 0]      S_S_SinLUT  [`C_SIN_COS_LUT_DEPTH - 1 : 0]  ;
 reg signed  [`C_SIN_COS_LUT_WIDTH - 1 : 0]      S_S_CosLUT  [`C_SIN_COS_LUT_DEPTH - 1 : 0]  ;
 
-
 assign S_phaseCut   = I_phase[`C_NCO_PHASE_WIDTH - 1 -: `C_PHASE_HEADER_LENGTH];
 assign O_phase      = I_phase;
-
 
 initial begin 
     $readmemh(`C_SIN_LUT_PATH, S_S_SinLUT);
