@@ -36,6 +36,7 @@ module correlator
 reg signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   S_S_postCarrCodeMix_IQ;
 // reg signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   O_S_postCarrCodeMix_Q;
 
+// TODO: PEL clock
 
 always @(posedge I_sysClk or negedge I_sysRst_n)
     if(!I_sysRst_n)
@@ -45,7 +46,7 @@ always @(posedge I_sysClk or negedge I_sysRst_n)
     else 
         S_S_postCarrCodeMix_IQ <= -I_S_carrMix_IQ;
 
-accumulator U_accumulator_0
+accumulator U0_accumulator
 (
     .I_sysClk               (I_sysClk),
     .I_sysRst_n             (I_sysRst_n),

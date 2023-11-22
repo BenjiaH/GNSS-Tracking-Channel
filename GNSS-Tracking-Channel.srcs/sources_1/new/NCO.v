@@ -40,7 +40,7 @@ wire    [`C_NCO_PHASE_WIDTH - 1 : 0]    S_phaseT;
 
 assign S_phaseT = 0;
 
-PA  U_PA_0
+PA  U0_PA
 (
     .I_sysClk   (I_sysClk),
     .I_sysRst_n (I_sysRst_n),
@@ -51,7 +51,7 @@ PA  U_PA_0
 generate
     case (C_NCO_MODE)
         "PA and LUT": begin
-            PAC U_PAC_0
+            PAC U0_PAC
             (
                 .I_sysClk   (I_sysClk),
                 .I_sysRst_n (I_sysRst_n),
@@ -68,7 +68,7 @@ generate
         end
         default: begin
             // assign O_phase = 0;
-            PAC U_PAC_1
+            PAC U1_PAC
             (
                 .I_sysClk   (I_sysClk),
                 .I_sysRst_n (I_sysRst_n),

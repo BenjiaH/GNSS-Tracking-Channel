@@ -38,7 +38,7 @@ NCO
 #(
     .C_NCO_MODE (`C_CARR_GEN_MODE)
 )
-U_CARR_GEN_0
+U0_NCO_carrGen
 (
     .I_sysClk   (I_sysClk),
     .I_sysRst_n (I_sysRst_n),

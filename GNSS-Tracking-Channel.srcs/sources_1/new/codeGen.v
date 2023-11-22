@@ -64,7 +64,7 @@ NCO
 #(
     .C_NCO_MODE (`C_CODE_GEN_MODE)
 )
-U_CODE_GEN_0
+U1_NCO_codePhaseGen
 (
     .I_sysClk   (I_sysClk),
     .I_sysRst_n (I_sysRst_n),

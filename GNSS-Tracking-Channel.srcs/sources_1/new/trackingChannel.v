@@ -49,7 +49,7 @@ wire        [0 : 0]                                                 S_lateCode;
 
 assign  O_sysClk = I_sysClk;
 
-carrierGen  U_carrierGen_0
+carrierGen  U0_carrierGen
 (
     .I_sysClk           (I_sysClk),
     .I_sysRst_n         (I_sysRst_n),
@@ -62,7 +62,7 @@ codeGen
 #(
     .C_CODE_PATH    (`C_CODE_PRN2_PATH)
 )
-U_codeGen_RPN2_0
+U0_codeGen_RPN2
 (
     .I_sysClk               (I_sysClk),
     .I_sysRst_n             (I_sysRst_n),
@@ -73,7 +73,7 @@ U_codeGen_RPN2_0
     .O_codeReplica          (S_codeReplica)
 );
 
-carrierMixing   U_carrierMixing_0
+carrierMixing   U0_carrierMixing
 (
     .I_sysClk           (I_sysClk),
     .I_sysRst_n         (I_sysRst_n),
@@ -85,7 +85,7 @@ carrierMixing   U_carrierMixing_0
     .O_S_carrMix_Q      (S_S_carrMix_Q)
 );
 
-PELCodeGen  U_PELCodeGen_0
+PELCodeGen  U0_PELCodeGen
 (
     .I_sysClk       (I_sysClk),
     .I_sysRst_n     (I_sysRst_n),
@@ -95,7 +95,7 @@ PELCodeGen  U_PELCodeGen_0
     .O_lateCode     (S_lateCode)
 );
 
-correlator  U_correlator_0_I_P
+correlator  U0_correlator_I_P
 (
     .I_sysClk               (I_sysClk),
     .I_sysRst_n             (I_sysRst_n),
@@ -105,7 +105,7 @@ correlator  U_correlator_0_I_P
     .I_S_carrMix_IQ         (S_S_carrMix_I)
 );
 
-correlator  U_correlator_1_Q_P
+correlator  U1_correlator_Q_P
 (
     .I_sysClk               (I_sysClk),
     .I_sysRst_n             (I_sysRst_n),
@@ -115,5 +115,14 @@ correlator  U_correlator_1_Q_P
     .I_S_carrMix_IQ         (S_S_carrMix_Q)
 );
 
+correlator  U2_correlator_I_E
+(
+    .I_sysClk               (I_sysClk),
+    .I_sysRst_n             (I_sysRst_n),
+    .I_codeReplicaClk       (S_codeReplicaClk),
+    .I_codeFinish           (S_codeFinish),
+    .I_codePELReplica       (S_earlyCode),
+    .I_S_carrMix_IQ         (S_S_carrMix_I)
+);
 
 endmodule
