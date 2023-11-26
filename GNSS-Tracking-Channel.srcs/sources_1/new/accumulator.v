@@ -25,37 +25,36 @@ module accumulator
 (
     input   wire                                                                I_sysClk,
     input   wire                                                                I_sysRst_n,
-    input   wire                                                                I_codeReplicaClk,
-    input   wire                                                                I_codeFinish,
-    input   wire signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   I_S_postCarrCodeMix_IQ
-    // output reg signed  [`C_ACCM_WIDTH - 1 : 0]                                 O_S_accmP
+    input   wire                                                                I_PELReplicaClk,
+    input   wire                                                                I_PELFinish,
+    input   wire signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   I_S_postCarrCodeMix_IQ,
+    output  wire signed  [`C_ACCM_WIDTH - 1 : 0]                                O_S_accumulation,
+    output  wire signed  [`C_ACCM_WIDTH - 1 : 0]                                 O_S_accumulationReg
 );
 
-// Parameters
-// parameter integer C_ACCM_WIDTH = $ceil(((2 * `C_ACCM_MAX_VALUE) == 1) ? 1 : $clog2((2 * `C_ACCM_MAX_VALUE)));
-
 // Internal signals
-reg signed  [`C_ACCM_WIDTH - 1 : 0] S_accumulation;
-reg signed  [`C_REG_WIDTH - 1 : 0]  S_accumulationReg;
+reg signed  [`C_ACCM_WIDTH - 1 : 0] S_S_accumulation;
+reg signed  [`C_ACCM_WIDTH - 1 : 0] S_S_accumulationReg;
 
 always @(posedge I_sysClk or negedge I_sysRst_n)
     if(!I_sysRst_n)
-        S_accumulation <= 0;
-    else if(I_codeFinish)
-        S_accumulation <= 0;
-    else if(I_codeReplicaClk)
-        S_accumulation <= S_accumulation + I_S_postCarrCodeMix_IQ;
+        S_S_accumulation <= 0;
+    else if(I_PELFinish)
+        S_S_accumulation <= 0;
+    else if(I_PELReplicaClk)
+        S_S_accumulation <= S_S_accumulation + I_S_postCarrCodeMix_IQ;
     else
-        S_accumulation <= S_accumulation;
+        S_S_accumulation <= S_S_accumulation;
 
 always @(posedge I_sysClk or negedge I_sysRst_n)
     if(!I_sysRst_n)
-        S_accumulationReg <= 0;
-    else if(I_codeReplicaClk)
-        S_accumulationReg <= S_accumulation;
+        S_S_accumulationReg <= 0;
+    else if(I_PELFinish)
+        S_S_accumulationReg <= S_S_accumulation;
     else
-        S_accumulationReg <= S_accumulationReg;
+        S_S_accumulationReg <= S_S_accumulationReg;
     
-
+assign O_S_accumulation   = S_S_accumulation;
+assign O_S_accumulationReg= S_S_accumulationReg;
 
 endmodule
