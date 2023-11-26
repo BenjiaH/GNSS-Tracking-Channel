@@ -137,7 +137,6 @@ always @(posedge I_sysClk or negedge I_sysRst_n)
     else
         S_codeWordCounterMaxFlag_d1 <= S_codeWordCounterMaxFlag;
 
-// assign O_codeFinish = (S_codeWordCounterMaxFlag_d1 & ~S_codeWordCounterMaxFlag) ? 1'b1 : 1'b0;
 assign O_codeFinish = (S_codeWordCounter == 0 && S_codeReplicaCounter_d == 0 && O_codeReplicaClk_d) ? 1'b1 : 1'b0;
 // assign O_PPS1ms = O_codeFinish;
 

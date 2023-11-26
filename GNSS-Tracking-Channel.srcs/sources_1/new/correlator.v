@@ -55,5 +55,4 @@ accumulator U0_accumulator
     .O_S_accumulationReg    (O_S_accumulationReg)
 );
 
-
 endmodule

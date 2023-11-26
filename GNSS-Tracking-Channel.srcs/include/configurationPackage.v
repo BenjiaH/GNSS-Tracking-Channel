@@ -81,7 +81,7 @@
 
 // C/A Code ROM
 `define     C_CODE_PRN2_PATH            "codePRN2.dat" // This file is imported as memory file. Therefore, the path should be relative to the simulation directory
-`define     C_CODE_ROM_DEPTH            32  // 实际只有1023bit，需要舍弃最低位
+`define     C_CODE_ROM_DEPTH            32
 `define     C_CODE_ROM_WIDTH            `C_WORD_WIDTH
 
 // Prompt, early and late code generator configuration
@@ -92,7 +92,6 @@
 
 // Accumulator configuration
 `define     C_ACCM_LEN_MS               1
-// `define     C_ACCM_MAX_VALUE            $ceil(`C_ACCM_LEN_MS * `C_SAMPLES_PER_1MS * `C_MAX_INPUT_AMP * `C_MAX_CARR_AMP)
 `define     C_ACCM_MAX_VALUE            (`C_ACCM_LEN_MS * `C_SAMPLES_PER_1MS * `C_MAX_INPUT_AMP * `C_MAX_CARR_AMP)
 `define     C_ACCM_WIDTH                $clog2(2 * `C_ACCM_MAX_VALUE)
 
