@@ -48,7 +48,12 @@
 // Input data configuration
 `define     C_S_FE_DATA_WIDTH           3   // 2 + 1
 
-// Simulation configuration 
+// Simulation configuration
+`define     C_SIM_RUN_ALL_MS            10
+`define     C_SIM_TIME_1NS              1000
+`define     C_SIM_TIME_1US              1000 * `C_SIM_TIME_1NS
+`define     C_SIM_TIME_1MS              1000 * `C_SIM_TIME_1US
+`define     C_SIM_TIME_MS_TO_PS         1000000000
 `define     C_FE_DATA_NAME              "FE_fs_99p375_MHz_skip_46250_time_100ms_int8.dat"
 
 // NCO configuration
@@ -83,6 +88,7 @@
 `define     C_CODE_DELAY_REG_WIDTH      $ceil(`C_SAMPLE_FREQ / `C_CODE_FREQ)
 `define     C_CODE_DELAY_MID_POINT      $ceil(`C_CODE_DELAY_REG_WIDTH / 2)
 `define     C_ONE_CHIP_SPACING          $ceil(`C_CODE_DELAY_MID_POINT / 2)
+`define     C_CODE_DELAY_CNT_MAX        `C_CODE_DELAY_REG_WIDTH
 
 // Accumulator configuration
 `define     C_ACCM_LEN_MS               1

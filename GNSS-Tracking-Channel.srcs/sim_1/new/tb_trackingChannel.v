@@ -23,18 +23,12 @@
 
 module tb_trackingChannel();
 
-reg                                     tb_I_sysClk;
-reg                                     tb_I_sysRst_n;
-reg signed  [`C_S_FE_DATA_WIDTH - 1 : 0]  tb_I_S_FEInputData;
-wire                                    tb_O_sysClk;
-
-// Internal signals
-// wire    [`C_S_CARR_OUTPUT_WIDTH - 1 : 0]    tb_S_carrSinReplica;
-// wire    [`C_S_CARR_OUTPUT_WIDTH - 1 : 0]    tb_S_carrCosReplica;
-// wire                                        tb_S_PPS1ms;
-// wire    [`C_CODE_WORD_SIZE - 1 : 0]         tb_S_codeWord;
-// wire    [0 : 0]                             tb_S_codeReplica;
-
+// Input signals
+reg                                         tb_I_sysClk;
+reg                                         tb_I_sysRst_n;
+reg signed  [`C_S_FE_DATA_WIDTH - 1 : 0]    tb_I_S_FEInputData;
+// Output signals
+wire                                        tb_O_sysClk;
 
 // Internal signals for read file
 integer                                     tb_S_dataFile    ; // file handler
@@ -42,26 +36,43 @@ integer                                     tb_S_scanFile    ; // file handler
 reg signed  [`C_S_FE_DATA_WIDTH - 1 : 0]    tb_S_S_capturedData;
 reg                                         tb_S_FEInputDataValid;
 
+integer i;
+
 always #`C_SYS_CLK_HALF_PERIOD tb_I_sysClk = ~tb_I_sysClk;  //99.375Mhz
 // always #`C_SYS_CLK_HALF_PERIOD tb_I_NCOClk = ~tb_I_NCOClk;  //200Mhz
-
 
 initial begin
     tb_I_sysClk <= 1'b1;
     tb_I_sysRst_n <= 1'b0;
     tb_I_S_FEInputData <= 0;
     
-    #(`C_SYS_CLK_HALF_PERIOD * 2 + 2000)
+    #(`C_SYS_CLK_HALF_PERIOD * 2 + `C_SIM_TIME_1NS * 2)
     tb_I_sysRst_n <= 1'b1;
+    
+    #(`C_SIM_TIME_1US * 3)
+    $display("");
+    $display("Time: %7.3f ms", $time / `C_SIM_TIME_MS_TO_PS);
+    trackingChannel_inst.getAccumulationValue();
+    
+    for(i = 0; i < `C_SIM_RUN_ALL_MS; i = i + 1) begin
+        #(`C_SIM_TIME_1MS)
+        $display("");
+        $display("Time: %7.3f ms", $time / `C_SIM_TIME_MS_TO_PS);
+        trackingChannel_inst.getAccumulationValue();
+    end
 
+
+    $stop;
+    $finish;
 end
 
-trackingChannel trackingChannel_inst(
-    .I_sysClk           (tb_I_sysClk),
-    .I_sysRst_n         (tb_I_sysRst_n),
-    .I_S_FEInputData    (tb_I_S_FEInputData),
-    .I_FEInputDataValid (tb_S_FEInputDataValid),
-    .O_sysClk           (tb_O_sysClk)
+trackingChannel trackingChannel_inst
+(
+    .I_sysClk                   (tb_I_sysClk),
+    .I_sysRst_n                 (tb_I_sysRst_n),
+    .I_S_FEInputData            (tb_I_S_FEInputData),
+    .I_FEInputDataValid         (tb_S_FEInputDataValid),
+    .O_sysClk                   (tb_O_sysClk)
 );
 
 // ****************Read Frond-end data file****************

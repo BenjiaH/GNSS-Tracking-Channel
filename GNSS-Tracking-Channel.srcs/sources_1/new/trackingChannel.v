@@ -31,23 +31,57 @@ module trackingChannel
 );
 
 // Internal signals
-// U_carrierGen_0 ...
+// U0_carrierGen ...
 wire signed [`C_S_CARR_OUTPUT_WIDTH - 1 : 0]                        S_S_carrSinReplica;
 wire signed [`C_S_CARR_OUTPUT_WIDTH - 1 : 0]                        S_S_carrCosReplica;
-// U_codeGen_RPN2_0 ...
+// U0_codeGen_RPN2 ...
 wire                                                                S_codeReplicaClk;
 wire                                                                S_codeFinish;
 wire        [`C_CODE_WORD_SIZE - 1 : 0]                             S_codeWord;
 wire        [0 : 0]                                                 S_codeReplica;
-// U_carrierMixing_0 ...
+// U0_carrierMixing ...
 wire signed [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   S_S_carrMix_I;
 wire signed [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   S_S_carrMix_Q;
-// U_PELCodeGen_0 ...
-wire        [0 : 0]                                                 S_promptCode;
-wire        [0 : 0]                                                 S_earlyCode;
-wire        [0 : 0]                                                 S_lateCode;
+// U0_PELCodeGen ...
+wire    [2 : 0] S_PELReplica;
+wire    [2 : 0] S_PELReplicaClk;
+wire    [2 : 0] S_PELFinish;
+// U0_correlator_I_P ...
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_I_P;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_I_P;
+// U1_correlator_Q_P ...
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_Q_P;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_Q_P;
+// U2_correlator_I_E ...
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_I_E;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_I_E;
+// U3_correlator_Q_E ...
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_Q_E;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_Q_E;
+// U4_correlator_I_L ...
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_I_L;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_I_L;
+// U5_correlator_Q_L ...
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_Q_L;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_Q_L;
 
+// Output
+wire signed [2 * `C_ACCM_WIDTH : 0]         S_S_accumulation_P;
+wire signed [2 * `C_ACCM_WIDTH : 0]         S_S_accumulation_E;
+wire signed [2 * `C_ACCM_WIDTH : 0]         S_S_accumulation_L;
+
+assign  S_S_accumulation_P = S_S_accumulationReg_I_P * S_S_accumulationReg_I_P + S_S_accumulationReg_Q_P * S_S_accumulationReg_Q_P;
+assign  S_S_accumulation_E = S_S_accumulationReg_I_E * S_S_accumulationReg_I_E + S_S_accumulationReg_Q_E * S_S_accumulationReg_Q_E;
+assign  S_S_accumulation_L = S_S_accumulationReg_I_L * S_S_accumulationReg_I_L + S_S_accumulationReg_Q_L * S_S_accumulationReg_Q_L;
 assign  O_sysClk = I_sysClk;
+
+task getAccumulationValue(); begin
+    $display("O_S_accumulation_P: %d", S_S_accumulation_P);
+    $display("O_S_accumulation_E: %d", S_S_accumulation_E);
+    $display("O_S_accumulation_L: %d", S_S_accumulation_L);
+end
+endtask
+
 
 carrierGen  U0_carrierGen
 (
@@ -87,42 +121,86 @@ carrierMixing   U0_carrierMixing
 
 PELCodeGen  U0_PELCodeGen
 (
-    .I_sysClk       (I_sysClk),
-    .I_sysRst_n     (I_sysRst_n),
-    .I_codeReplica  (S_codeReplica),
-    .O_promptCode   (S_promptCode),
-    .O_earlyCode    (S_earlyCode),
-    .O_lateCode     (S_lateCode)
+    .I_sysClk           (I_sysClk),
+    .I_sysRst_n         (I_sysRst_n),
+    .I_codeReplicaClk   (S_codeReplicaClk),
+    .I_codeReplica      (S_codeReplica),
+    .I_codeFinish       (S_codeFinish),
+    .O_PELReplica       (S_PELReplica),
+    .O_PELReplicaClk    (S_PELReplicaClk),
+    .O_PELFinish        (S_PELFinish)
 );
 
 correlator  U0_correlator_I_P
 (
-    .I_sysClk               (I_sysClk),
-    .I_sysRst_n             (I_sysRst_n),
-    .I_codeReplicaClk       (S_codeReplicaClk),
-    .I_codeFinish           (S_codeFinish),
-    .I_codePELReplica       (S_promptCode),
-    .I_S_carrMix_IQ         (S_S_carrMix_I)
+    .I_sysClk           (I_sysClk),
+    .I_sysRst_n         (I_sysRst_n),
+    .I_PELReplica       (S_PELReplica[2]),
+    .I_PELReplicaClk    (S_PELReplicaClk[2]),
+    .I_PELFinish        (S_PELFinish[2]),
+    .I_S_carrMix_IQ     (S_S_carrMix_I),
+    .O_S_accumulation   (S_S_accumulation_I_P),
+    .O_S_accumulationReg(S_S_accumulationReg_I_P)
 );
 
 correlator  U1_correlator_Q_P
 (
-    .I_sysClk               (I_sysClk),
-    .I_sysRst_n             (I_sysRst_n),
-    .I_codeReplicaClk       (S_codeReplicaClk),
-    .I_codeFinish           (S_codeFinish),
-    .I_codePELReplica       (S_promptCode),
-    .I_S_carrMix_IQ         (S_S_carrMix_Q)
+    .I_sysClk           (I_sysClk),
+    .I_sysRst_n         (I_sysRst_n),
+    .I_PELReplica       (S_PELReplica[2]),
+    .I_PELReplicaClk    (S_PELReplicaClk[2]),
+    .I_PELFinish        (S_PELFinish[2]),
+    .I_S_carrMix_IQ     (S_S_carrMix_Q),
+    .O_S_accumulation   (S_S_accumulation_Q_P),
+    .O_S_accumulationReg(S_S_accumulationReg_Q_P)
 );
 
 correlator  U2_correlator_I_E
 (
-    .I_sysClk               (I_sysClk),
-    .I_sysRst_n             (I_sysRst_n),
-    .I_codeReplicaClk       (S_codeReplicaClk),
-    .I_codeFinish           (S_codeFinish),
-    .I_codePELReplica       (S_earlyCode),
-    .I_S_carrMix_IQ         (S_S_carrMix_I)
+    .I_sysClk           (I_sysClk),
+    .I_sysRst_n         (I_sysRst_n),
+    .I_PELReplica       (S_PELReplica[1]),
+    .I_PELReplicaClk    (S_PELReplicaClk[1]),
+    .I_PELFinish        (S_PELFinish[1]),
+    .I_S_carrMix_IQ     (S_S_carrMix_I),
+    .O_S_accumulation   (S_S_accumulation_I_E),
+    .O_S_accumulationReg(S_S_accumulationReg_I_E)
+);
+
+correlator  U3_correlator_Q_E
+(
+    .I_sysClk           (I_sysClk),
+    .I_sysRst_n         (I_sysRst_n),
+    .I_PELReplica       (S_PELReplica[1]),
+    .I_PELReplicaClk    (S_PELReplicaClk[1]),
+    .I_PELFinish        (S_PELFinish[1]),
+    .I_S_carrMix_IQ     (S_S_carrMix_Q),
+    .O_S_accumulation   (S_S_accumulation_Q_E),
+    .O_S_accumulationReg(S_S_accumulationReg_Q_E)
+);
+
+correlator  U4_correlator_I_L
+(
+    .I_sysClk           (I_sysClk),
+    .I_sysRst_n         (I_sysRst_n),
+    .I_PELReplica       (S_PELReplica[0]),
+    .I_PELReplicaClk    (S_PELReplicaClk[0]),
+    .I_PELFinish        (S_PELFinish[0]),
+    .I_S_carrMix_IQ     (S_S_carrMix_I),
+    .O_S_accumulation   (S_S_accumulation_I_L),
+    .O_S_accumulationReg(S_S_accumulationReg_I_L)
+);
+
+correlator  U5_correlator_Q_L
+(
+    .I_sysClk           (I_sysClk),
+    .I_sysRst_n         (I_sysRst_n),
+    .I_PELReplica       (S_PELReplica[0]),
+    .I_PELReplicaClk    (S_PELReplicaClk[0]),
+    .I_PELFinish        (S_PELFinish[0]),
+    .I_S_carrMix_IQ     (S_S_carrMix_Q),
+    .O_S_accumulation   (S_S_accumulation_Q_L),
+    .O_S_accumulationReg(S_S_accumulationReg_Q_L)
 );
 
 endmodule
