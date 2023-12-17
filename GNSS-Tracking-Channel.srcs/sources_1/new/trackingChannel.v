@@ -43,45 +43,45 @@ wire        [0 : 0]                                                 S_codeReplic
 wire signed [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   S_S_carrMix_I;
 wire signed [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   S_S_carrMix_Q;
 // U0_PELCodeGen ...
-wire    [2 : 0] S_PELReplica;
-wire    [2 : 0] S_PELReplicaClk;
-wire    [2 : 0] S_PELFinish;
+wire        [2 : 0]                                                 S_PELReplica;
+wire        [2 : 0]                                                 S_PELReplicaClk;
+wire        [2 : 0]                                                 S_PELFinish;
 // U0_correlator_I_P ...
-wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_I_P;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulation_I_P;
 wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_I_P;
 // U1_correlator_Q_P ...
-wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_Q_P;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulation_Q_P;
 wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_Q_P;
 // U2_correlator_I_E ...
-wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_I_E;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulation_I_E;
 wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_I_E;
 // U3_correlator_Q_E ...
-wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_Q_E;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulation_Q_E;
 wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_Q_E;
 // U4_correlator_I_L ...
-wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_I_L;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulation_I_L;
 wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_I_L;
 // U5_correlator_Q_L ...
-wire signed [`C_ACCM_WIDTH - 1 : 0]                                S_S_accumulation_Q_L;
+wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulation_Q_L;
 wire signed [`C_ACCM_WIDTH - 1 : 0]                                 S_S_accumulationReg_Q_L;
 
 // Output
-wire signed [2 * `C_ACCM_WIDTH : 0]         S_S_accumulation_P;
-wire signed [2 * `C_ACCM_WIDTH : 0]         S_S_accumulation_E;
-wire signed [2 * `C_ACCM_WIDTH : 0]         S_S_accumulation_L;
+wire signed [2 * `C_ACCM_WIDTH : 0]                                 S_S_accumulation_P;
+wire signed [2 * `C_ACCM_WIDTH : 0]                                 S_S_accumulation_E;
+wire signed [2 * `C_ACCM_WIDTH : 0]                                 S_S_accumulation_L;
 
 assign  S_S_accumulation_P = S_S_accumulationReg_I_P * S_S_accumulationReg_I_P + S_S_accumulationReg_Q_P * S_S_accumulationReg_Q_P;
 assign  S_S_accumulation_E = S_S_accumulationReg_I_E * S_S_accumulationReg_I_E + S_S_accumulationReg_Q_E * S_S_accumulationReg_Q_E;
 assign  S_S_accumulation_L = S_S_accumulationReg_I_L * S_S_accumulationReg_I_L + S_S_accumulationReg_Q_L * S_S_accumulationReg_Q_L;
 assign  O_sysClk = I_sysClk;
 
+// User task
 task getAccumulationValue(); begin
     $display("O_S_accumulation_P: %d", S_S_accumulation_P);
     $display("O_S_accumulation_E: %d", S_S_accumulation_E);
     $display("O_S_accumulation_L: %d", S_S_accumulation_L);
 end
 endtask
-
 
 carrierGen  U0_carrierGen
 (
@@ -94,7 +94,7 @@ carrierGen  U0_carrierGen
 
 codeGen
 #(
-    .C_CODE_PATH    (`C_CODE_PRN2_PATH)
+    .C_CODE_PATH            (`C_CODE_PRN2_PATH)
 )
 U0_codeGen_RPN2
 (

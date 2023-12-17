@@ -36,10 +36,10 @@ module codeGen
 );
 
 // Parameters
-parameter integer   C_CODE_REPLICA_COUNTER_WIDTH    = $ceil((`C_CODE_WORD_SIZE == 1) ? 1 : $clog2(`C_CODE_WORD_SIZE)), // 5
-                    C_CODE_REPLICA_COUNTER_MAX      = `C_CODE_WORD_SIZE - 1,                                    // 31
-                    C_CODE_WORD_COUNTER_WIDTH       = $ceil((`C_CODE_ROM_DEPTH == 1) ? 1 : $clog2(`C_CODE_ROM_DEPTH)), // 5
-                    C_CODE_WORD_COUNTER_MAX         = `C_CODE_ROM_DEPTH - 1;                                     // 31
+parameter integer C_CODE_REPLICA_COUNTER_WIDTH = $ceil((`C_CODE_WORD_SIZE == 1) ? 1 : $clog2(`C_CODE_WORD_SIZE)),   // 5
+                  C_CODE_REPLICA_COUNTER_MAX   = `C_CODE_WORD_SIZE - 1,                                             // 31
+                  C_CODE_WORD_COUNTER_WIDTH    = $ceil((`C_CODE_ROM_DEPTH == 1) ? 1 : $clog2(`C_CODE_ROM_DEPTH)),   // 5
+                  C_CODE_WORD_COUNTER_MAX      = `C_CODE_ROM_DEPTH - 1;                                             // 31
 
 // Internal signals
 wire    [`C_NCO_PHASE_WIDTH - 1 : 0]            S_codeGen;

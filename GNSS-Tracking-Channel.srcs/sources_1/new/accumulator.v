@@ -27,9 +27,9 @@ module accumulator
     input   wire                                                                I_sysRst_n,
     input   wire                                                                I_PELReplicaClk,
     input   wire                                                                I_PELFinish,
-    input   wire signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]   I_S_postCarrCodeMix_IQ,
+    input   wire signed  [`C_S_FE_DATA_WIDTH + `C_S_CARR_OUTPUT_WIDTH - 1 : 0]  I_S_postCarrCodeMix_IQ,
     output  wire signed  [`C_ACCM_WIDTH - 1 : 0]                                O_S_accumulation,
-    output  wire signed  [`C_ACCM_WIDTH - 1 : 0]                                 O_S_accumulationReg
+    output  wire signed  [`C_ACCM_WIDTH - 1 : 0]                                O_S_accumulationReg
 );
 
 // Internal signals

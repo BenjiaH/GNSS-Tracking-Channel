@@ -36,7 +36,7 @@
 `define     C_SAMPLE_PERIOD             10062.893
 `define     C_SAMPLE_HALF_PERIOD        5031.446
 `define     C_CODE_FREQ                 1023000
-`define     C_SAMPLES_PER_1MS           `C_SAMPLE_FREQ/1000
+`define     C_SAMPLES_PER_1MS           `C_SAMPLE_FREQ / 1000
 `define     C_MAX_INPUT_AMP             3
 `define     C_MAX_CARR_AMP              2
 
@@ -47,9 +47,10 @@
 
 // Input data configuration
 `define     C_S_FE_DATA_WIDTH           3   // 2 + 1
+`define     C_FE_DATA_DURATION_MS       99
 
 // Simulation configuration
-`define     C_SIM_RUN_ALL_MS            10
+`define     C_SIM_RUN_ALL_MS            20
 `define     C_SIM_TIME_1NS              1000
 `define     C_SIM_TIME_1US              1000 * `C_SIM_TIME_1NS
 `define     C_SIM_TIME_1MS              1000 * `C_SIM_TIME_1US
@@ -80,7 +81,43 @@
 `define     C_CODE_WORD_SIZE            `C_WORD_WIDTH
 
 // C/A Code ROM
-`define     C_CODE_PRN2_PATH            "codePRN2.dat" // This file is imported as memory file. Therefore, the path should be relative to the simulation directory
+`define     C_CODE_PRN1_PATH            "codePRN1.dat"  // These files are imported as memory file.
+`define     C_CODE_PRN2_PATH            "codePRN2.dat"  // Therefore, the path should be relative to the simulation directory
+`define     C_CODE_PRN3_PATH            "codePRN3.dat"
+`define     C_CODE_PRN4_PATH            "codePRN4.dat"
+`define     C_CODE_PRN5_PATH            "codePRN5.dat"
+`define     C_CODE_PRN6_PATH            "codePRN6.dat"
+`define     C_CODE_PRN7_PATH            "codePRN7.dat"
+`define     C_CODE_PRN8_PATH            "codePRN8.dat"
+`define     C_CODE_PRN9_PATH            "codePRN9.dat"
+`define     C_CODE_PRN10_PATH           "codePRN10.dat"
+`define     C_CODE_PRN11_PATH           "codePRN11.dat"
+`define     C_CODE_PRN12_PATH           "codePRN12.dat"
+`define     C_CODE_PRN13_PATH           "codePRN13.dat"
+`define     C_CODE_PRN14_PATH           "codePRN14.dat"
+`define     C_CODE_PRN15_PATH           "codePRN15.dat"
+`define     C_CODE_PRN16_PATH           "codePRN16.dat"
+`define     C_CODE_PRN17_PATH           "codePRN17.dat"
+`define     C_CODE_PRN18_PATH           "codePRN18.dat"
+`define     C_CODE_PRN19_PATH           "codePRN19.dat"
+`define     C_CODE_PRN20_PATH           "codePRN20.dat"
+`define     C_CODE_PRN21_PATH           "codePRN21.dat"
+`define     C_CODE_PRN22_PATH           "codePRN22.dat"
+`define     C_CODE_PRN23_PATH           "codePRN23.dat"
+`define     C_CODE_PRN24_PATH           "codePRN24.dat"
+`define     C_CODE_PRN25_PATH           "codePRN25.dat"
+`define     C_CODE_PRN26_PATH           "codePRN26.dat"
+`define     C_CODE_PRN27_PATH           "codePRN27.dat"
+`define     C_CODE_PRN28_PATH           "codePRN28.dat"
+`define     C_CODE_PRN29_PATH           "codePRN29.dat"
+`define     C_CODE_PRN30_PATH           "codePRN30.dat"
+`define     C_CODE_PRN31_PATH           "codePRN31.dat"
+`define     C_CODE_PRN32_PATH           "codePRN32.dat"
+`define     C_CODE_PRN33_PATH           "codePRN33.dat"
+`define     C_CODE_PRN34_PATH           "codePRN34.dat"
+`define     C_CODE_PRN35_PATH           "codePRN35.dat"
+`define     C_CODE_PRN36_PATH           "codePRN36.dat"
+`define     C_CODE_PRN37_PATH           "codePRN37.dat"
 `define     C_CODE_ROM_DEPTH            32
 `define     C_CODE_ROM_WIDTH            `C_WORD_WIDTH
 
@@ -94,5 +131,3 @@
 `define     C_ACCM_LEN_MS               1
 `define     C_ACCM_MAX_VALUE            (`C_ACCM_LEN_MS * `C_SAMPLES_PER_1MS * `C_MAX_INPUT_AMP * `C_MAX_CARR_AMP)
 `define     C_ACCM_WIDTH                $clog2(2 * `C_ACCM_MAX_VALUE)
-
-

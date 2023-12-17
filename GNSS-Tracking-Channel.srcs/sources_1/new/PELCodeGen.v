@@ -47,15 +47,15 @@ parameter   ST_IDEL     = 5'b00001,
             ST_LATE     = 5'b10000;
 
 // Internal signals
-wire    [0 : 0] S_promptCode;
-wire    [0 : 0] S_earlyCode;
-wire    [0 : 0] S_lateCode;
-wire            S_promptCodeClk;
-wire            S_earlyCodeClk;
-wire            S_lateCodeClk;
-wire            S_promptFinish;
-wire            S_earlyFinish;
-wire            S_lateFinish;
+wire    [0 : 0]                             S_promptCode;
+wire    [0 : 0]                             S_earlyCode;
+wire    [0 : 0]                             S_lateCode;
+wire                                        S_promptCodeClk;
+wire                                        S_earlyCodeClk;
+wire                                        S_lateCodeClk;
+wire                                        S_promptFinish;
+wire                                        S_earlyFinish;
+wire                                        S_lateFinish;
 reg     [C_CODE_DELAY_REG_WIDTH - 1 : 0]    S_codeDelayReg;
 reg     [C_CODE_DELAY_CNT_WIDTH - 1 : 0]    S_codeDelayCnt;
 reg     [4 : 0]                             S_currentState;

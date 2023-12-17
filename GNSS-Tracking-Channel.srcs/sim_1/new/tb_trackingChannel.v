@@ -42,6 +42,11 @@ always #`C_SYS_CLK_HALF_PERIOD tb_I_sysClk = ~tb_I_sysClk;  //99.375Mhz
 // always #`C_SYS_CLK_HALF_PERIOD tb_I_NCOClk = ~tb_I_NCOClk;  //200Mhz
 
 initial begin
+    $display("*******************************************");
+    $display("********** GNSS Tracking Channel **********");
+    $display("*******************************************");
+    $display("\nSimulation start...\n\n");
+    
     tb_I_sysClk <= 1'b1;
     tb_I_sysRst_n <= 1'b0;
     tb_I_S_FEInputData <= 0;
@@ -50,20 +55,24 @@ initial begin
     tb_I_sysRst_n <= 1'b1;
     
     #(`C_SIM_TIME_1US * 3)
-    $display("");
+    $display();
     $display("Time: %7.3f ms", $time / `C_SIM_TIME_MS_TO_PS);
     trackingChannel_inst.getAccumulationValue();
-    
-    for(i = 0; i < `C_SIM_RUN_ALL_MS; i = i + 1) begin
+
+    for(i = 0; i < `C_FE_DATA_DURATION_MS; i = i + 1) begin
         #(`C_SIM_TIME_1MS)
-        $display("");
+        $display();
+        if($time > `C_SIM_RUN_ALL_MS * `C_SIM_TIME_MS_TO_PS) begin
+            $display("Reached maximum simulation time %7.3f ms!", `C_SIM_RUN_ALL_MS);
+            // $stop;
+        end
         $display("Time: %7.3f ms", $time / `C_SIM_TIME_MS_TO_PS);
         trackingChannel_inst.getAccumulationValue();
     end
 
-
+    $display("\n\nReached the end of the simulation file!");
+    $display("Simulation finished!\n\n");
     $stop;
-    $finish;
 end
 
 trackingChannel trackingChannel_inst
