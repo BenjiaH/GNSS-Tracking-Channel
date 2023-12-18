@@ -30,13 +30,14 @@ reg signed  [`C_S_FE_DATA_WIDTH - 1 : 0]    tb_I_S_FEInputData;
 // Output signals
 wire                                        tb_O_sysClk;
 
+// Integer
+integer i;
+
 // Internal signals for read file
 integer                                     tb_S_dataFile    ; // file handler
 integer                                     tb_S_scanFile    ; // file handler
 reg signed  [`C_S_FE_DATA_WIDTH - 1 : 0]    tb_S_S_capturedData;
 reg                                         tb_S_FEInputDataValid;
-
-integer i;
 
 always #`C_SYS_CLK_HALF_PERIOD tb_I_sysClk = ~tb_I_sysClk;  //99.375Mhz
 // always #`C_SYS_CLK_HALF_PERIOD tb_I_NCOClk = ~tb_I_NCOClk;  //200Mhz
@@ -46,7 +47,8 @@ initial begin
     $display("********** GNSS Tracking Channel **********");
     $display("*******************************************");
     $display("\nSimulation start...\n\n");
-    
+
+    trackingChannel_inst.createFile();
     tb_I_sysClk <= 1'b1;
     tb_I_sysRst_n <= 1'b0;
     tb_I_S_FEInputData <= 0;
@@ -54,23 +56,22 @@ initial begin
     #(`C_SYS_CLK_HALF_PERIOD * 2 + `C_SIM_TIME_1NS * 2)
     tb_I_sysRst_n <= 1'b1;
     
-    #(`C_SIM_TIME_1US * 3)
-    $display();
-    $display("Time: %7.3f ms", $time / `C_SIM_TIME_MS_TO_PS);
-    trackingChannel_inst.getAccumulationValue();
+    #(`C_SIM_TIME_1US * 4)
 
     for(i = 0; i < `C_FE_DATA_DURATION_MS; i = i + 1) begin
-        #(`C_SIM_TIME_1MS)
-        $display();
         if($time > `C_SIM_RUN_ALL_MS * `C_SIM_TIME_MS_TO_PS) begin
-            $display("Reached maximum simulation time %7.3f ms!", `C_SIM_RUN_ALL_MS);
+            $display("Warning: Reached the maximum simulation time %7.3f ms!", `C_SIM_RUN_ALL_MS);
             // $stop;
         end
-        $display("Time: %7.3f ms", $time / `C_SIM_TIME_MS_TO_PS);
-        trackingChannel_inst.getAccumulationValue();
+        $display("Time: %7.2f ms", $time / `C_SIM_TIME_MS_TO_PS);
+        trackingChannel_inst.getAndSaveAccumulationValue();
+        #(`C_SIM_TIME_1MS)
+        $display();
     end
 
-    $display("\n\nReached the end of the simulation file!");
+    trackingChannel_inst.closeFile();
+    $display();
+    $display("Error: Reached the end of the simulation file!");
     $display("Simulation finished!\n\n");
     $stop;
 end

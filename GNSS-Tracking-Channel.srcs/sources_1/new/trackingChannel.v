@@ -76,10 +76,71 @@ assign  S_S_accumulation_L = S_S_accumulationReg_I_L * S_S_accumulationReg_I_L +
 assign  O_sysClk = I_sysClk;
 
 // User task
-task getAccumulationValue(); begin
+// Variable for user task
+integer                                                             S_accum_P_fileHandler,
+S_accum_E_fileHandler,
+S_accum_L_fileHandler;
+integer                                                             errNO;
+reg         [320 : 0]                                               errMsg;
+
+task createFile(); begin
+    S_accum_P_fileHandler = $fopen("accumulation_P.dat", "w");
+    errNO = $ferror(S_accum_P_fileHandler, errMsg);
+    if (S_accum_P_fileHandler == 0) begin
+        $display("Error: (%h)%s", errNO, errMsg);
+        $stop;
+    end
+    S_accum_E_fileHandler = $fopen("accumulation_E.dat", "w");
+    errNO = $ferror(S_accum_P_fileHandler, errMsg);
+    if (S_accum_E_fileHandler == 0) begin
+        $display("Error: (%h)%s", errNO, errMsg);
+        $stop;
+    end
+    S_accum_L_fileHandler = $fopen("accumulation_L.dat", "w");
+    errNO = $ferror(S_accum_P_fileHandler, errMsg);
+    if (S_accum_L_fileHandler == 0) begin
+        $display("Error: (%h)%s", errNO, errMsg);
+        $stop;
+    end
+end
+endtask
+
+task openFile(); begin
+    S_accum_P_fileHandler = $fopen("accumulation_P.dat", "a");
+    errNO = $ferror(S_accum_P_fileHandler, errMsg);
+    if (S_accum_P_fileHandler == 0) begin
+        $display("\nError: (%h)%s\n", errNO, errMsg);
+        $stop;
+    end
+    S_accum_E_fileHandler = $fopen("accumulation_E.dat", "a");
+    errNO = $ferror(S_accum_P_fileHandler, errMsg);
+    if (S_accum_E_fileHandler == 0) begin
+        $display("\nError: (%h)%s\n", errNO, errMsg);
+        $stop;
+    end
+    S_accum_L_fileHandler = $fopen("accumulation_L.dat", "a");
+    errNO = $ferror(S_accum_P_fileHandler, errMsg);
+    if (S_accum_L_fileHandler == 0) begin
+        $display("\nError: (%h)%s\n", errNO, errMsg);
+        $stop;
+    end
+end
+endtask
+
+task closeFile(); begin
+    $fclose(S_accum_P_fileHandler);
+    $fclose(S_accum_E_fileHandler);
+    $fclose(S_accum_L_fileHandler);
+end
+endtask
+
+task getAndSaveAccumulationValue(); begin
     $display("O_S_accumulation_P: %d", S_S_accumulation_P);
     $display("O_S_accumulation_E: %d", S_S_accumulation_E);
     $display("O_S_accumulation_L: %d", S_S_accumulation_L);
+    $fwrite(S_accum_P_fileHandler, "%-6d\n", S_S_accumulation_P);
+    $fwrite(S_accum_E_fileHandler, "%-6d\n", S_S_accumulation_E);
+    $fwrite(S_accum_L_fileHandler, "%-6d\n", S_S_accumulation_L);
 end
 endtask
 
